@@ -19,6 +19,7 @@ dbConnection(process.env.DATABASE_URL);
 
 // ROUTES
 app.use("/api/users", userRoutes);
+app.use("/api/charitableusers", charitableuserRoutes);
 
 app.listen(3000, () => {
   console.log(`Server listening at http://localhost:${PORT}`);
