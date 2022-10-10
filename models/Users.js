@@ -4,12 +4,12 @@ import mongoose from "mongoose";
 const UserSchema = new mongoose.Schema({
     first_name: {
         type: String,
-        required: true,
+        required: false,
         trim: true,
     },
     last_name: {
         type: String,
-        required: true,
+        required: false,
         trim: true,
     },
     email: {
@@ -26,11 +26,6 @@ const UserSchema = new mongoose.Schema({
     emailVerified: {
         type: Boolean,
         default: false,
-    },
-    role: {
-        type: String,
-        default: "user",
-        enum: ["user", "admin"],
     },
     createdAt: {
         type: Date,

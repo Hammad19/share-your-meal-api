@@ -4,10 +4,10 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 // @desc    Register a new user
-// @route   POST /api/users
+// @route   POST http://localhost:8000/api/users/registerUser
 // @access  Public
 export const registerUser = async (req, res) => {
-  const { first_name, last_name, email, password, confirm_password } = req.body;
+  const { email, password, confirm_password } = req.body;
 
   try {
     // check if confirm password matches password else throw error
@@ -24,18 +24,13 @@ export const registerUser = async (req, res) => {
       throw new Error("User already exists");
     }
 
-    const user_role = req.body.role || "user";
-
     // create password hash for the user
     const password_salt = await bcrypt.genSalt(10);
     const password_hash = await bcrypt.hash(password, password_salt);
 
     const user = await User.create({
-      first_name,
-      last_name,
       email,
       password: password_hash,
-      user_role,
     });
 
     // create token for the user
@@ -50,10 +45,7 @@ export const registerUser = async (req, res) => {
         token,
         user: {
           id: user._id,
-          first_name: user.first_name,
-          last_name: user.last_name,
           email: user.email,
-          role: user.role,
         },
       });
     } else {
@@ -91,10 +83,7 @@ export const loginUser = async (req, res) => {
         token,
         user: {
           id: user._id,
-          first_name: user.first_name,
-          last_name: user.last_name,
           email: user.email,
-          role: user.role,
         },
       });
     } else {
