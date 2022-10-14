@@ -23,6 +23,13 @@ const UserSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
+
+    accounttype: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    
     emailVerified: {
         type: Boolean,
         default: false,
