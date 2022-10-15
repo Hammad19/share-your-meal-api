@@ -4,9 +4,9 @@ import cors from "cors";
 import express from "express";
 import dbConnection from "./configs/db_connection.js";
 import userRoutes from "./routes/UserRoutes.js";
-
+// import charitableuserRoutes from "./routes/charitableuserRoutes"
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8000;
 
 // Middlewares
 // CORS POLICY
@@ -17,12 +17,11 @@ app.use(express.json());
 // DB CONNECTION
 dbConnection(process.env.DATABASE_URL);
 
-// ROUTES
-app.use("/api/users", (req, res, next) => {
-  console.log(req, 'req')
-  next()
-}, userRoutes);
 
-app.listen(PORT, () => {
+
+// ROUTES
+app.use("/api/users", userRoutes);
+
+app.listen(3000, () => {
   console.log(`Server listening at http://localhost:${PORT}`);
 });

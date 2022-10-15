@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 // @route   POST http://localhost:8000/api/users/signup
 // @access  Public
 export const registerUser = async (req, res) => {
-  const { email, password, confirm_password } = req.body;
+  const {first_name, email, password, confirm_password, accounttype} = req.body;
 
   try {
     // check if confirm password matches password else throw error
@@ -29,12 +29,15 @@ export const registerUser = async (req, res) => {
     const password_hash = await bcrypt.hash(password, password_salt);
 
     const user = await User.create({
+      first_name,
       email,
       password: password_hash,
+      accounttype
     });
 
     // create token for the user
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, 
+      {
         expiresIn: process.env.JWT_EXPIRE,
       });
 
@@ -46,6 +49,7 @@ export const registerUser = async (req, res) => {
         user: {
           id: user._id,
           email: user.email,
+          accounttype: user.accounttype,
         },
       });
     } else {
