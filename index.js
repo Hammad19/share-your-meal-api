@@ -6,7 +6,7 @@ import dbConnection from "./configs/db_connection.js";
 import userRoutes from "./routes/UserRoutes.js";
 
 const app = express();
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8080;
 
 // Middlewares
 // CORS POLICY
@@ -18,8 +18,11 @@ app.use(express.json());
 dbConnection(process.env.DATABASE_URL);
 
 // ROUTES
-app.use("/api/users", userRoutes);
+app.use("/api/users", (req, res, next) => {
+  console.log(req, 'req')
+  next()
+}, userRoutes);
 
-app.listen(3000, () => {
+app.listen(PORT, () => {
   console.log(`Server listening at http://localhost:${PORT}`);
 });

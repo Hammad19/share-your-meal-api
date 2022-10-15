@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 // @desc    Register a new user
-// @route   POST http://localhost:8000/api/users/registerUser
+// @route   POST http://localhost:8000/api/users/signup
 // @access  Public
 export const registerUser = async (req, res) => {
   const { email, password, confirm_password } = req.body;
