@@ -22,6 +22,6 @@ dbConnection(process.env.DATABASE_URL);
 // ROUTES
 app.use("/api/users", userRoutes);
 
-app.listen(3000, () => {
+app.listen(PORT, () => {
   console.log(`Server listening at http://localhost:${PORT}`);
 });
