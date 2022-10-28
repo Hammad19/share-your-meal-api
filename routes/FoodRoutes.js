@@ -1,6 +1,6 @@
 // Create User Routes
 import express from "express";
-import { addFood, updateFood, deleteFood,getAllFood } from "../controllers/FoodController.js";
+import { addFood, updateFood, deleteFood,getAllFood,getFoodForCharitableOrganization } from "../controllers/FoodController.js";
 import { protect } from "../middlewares/auth-middleware.js";
 
 const router = express.Router();
@@ -29,5 +29,10 @@ router.route("/update").post(updateFood);
 // @access  Public
 
 router.route("/getall").get(getAllFood);
+
+//@desc  Getfoodforcharitableorganization
+// @route   GET /api/food/getfoodforcharitableorganization
+// @access  Public
+router.route("/getfoodforcharitableorganization").get(getFoodForCharitableOrganization);
 
 export default router;

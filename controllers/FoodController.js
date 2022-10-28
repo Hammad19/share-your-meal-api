@@ -197,3 +197,40 @@ export const updateFood = async (req, res) =>
         });
     }
 }
+
+// @desc    getfoodbyquantityandisfree
+// @route   GET http://localhost:8000/api/food/getfoodforcharitableorganization
+// @access  Public
+export const getFoodForCharitableOrganization = async (req, res) =>
+{
+    const {food_quantity, is_free} = req.body;
+    try 
+    {
+        //get all foods whose quantity is greater then or equal to food_quantity and is_free is true
+        const food = await Food.find({food_quantity: {$gte: food_quantity}, is_free: is_free});
+        if (food) 
+        {
+            res.status(200).json({
+                message: "Food fetched successfully",
+                success: true,
+                food: food,
+            });
+        } 
+        else 
+        {
+            res.status(400);
+            throw new Error("Invalid food data");
+        }
+    } 
+    catch (error) 
+    {
+        res.status(400).json({
+            message: error.message,
+            success: false,
+        });
+    }
+}
+
+
+
+
