@@ -125,14 +125,23 @@ export const deleteFood = async (req, res) =>
 // @desc    getfoodbysharedby
 // @route   GET http://localhost:8000/api/food/getfoodbysharedby
 // @access  Public
+
+//@desc getfoodbysharedby
+// @route   GET /api/food/getfoodbysharedby
+// @access  Public
 export const getFoodBySharedBy = async (req, res) =>
 {
-    const {food_shared_by} = req.body;
+    const {food_shared_by} = req.params;
+
+
     try
 
     {
+        //return all foods shared by a particular user
         const food = await Food.find({food_shared_by: food_shared_by});
-        if (food) 
+
+        //if food is an empty array, then no food is shared by the user
+        if (food)
         {
             res.status(200).json({
                 message: "Food fetched successfully",
@@ -140,6 +149,7 @@ export const getFoodBySharedBy = async (req, res) =>
                 food: food,
             });
         } 
+
         else 
         {
             res.status(400);
@@ -203,7 +213,7 @@ export const updateFood = async (req, res) =>
 // @access  Public
 export const getFoodForCharitableOrganization = async (req, res) =>
 {
-    const {food_quantity, is_free} = req.body;
+    const {food_quantity, is_free} = req.params;
     try 
     {
         //get all foods whose quantity is greater then or equal to food_quantity and is_free is true
