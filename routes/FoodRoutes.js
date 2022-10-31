@@ -1,6 +1,6 @@
 // Create User Routes
 import express from "express";
-import { addFood, updateFood, deleteFood,getAllFood,getFoodForCharitableOrganization, getFoodBySharedBy } from "../controllers/FoodController.js";
+import { addFood, updateFood, deleteFood,getAllFood,getFoodForCharitableOrganization, getFoodBySharedBy, getFoodByType } from "../controllers/FoodController.js";
 import { protect } from "../middlewares/auth-middleware.js";
 
 const router = express.Router();
@@ -12,11 +12,7 @@ const router = express.Router();
 
 router.route("/add").post(addFood);
 
-// @desc    Delete a food
-// @route   DELETE /api/food/delete
-// @access  Public
 
-router.route("/delete").post(deleteFood);
 
 // @desc    Update a food
 // @route   PUT /api/food/update
@@ -35,6 +31,17 @@ router.route("/update").post(updateFood);
 router.route("/getfoodbysharedby/:food_shared_by").get(getFoodBySharedBy);
 
 
+// @desc    delete food
+// @route   DELETE http://localhost:8000/api/food/delete/:id
+// @access  Public
+
+router.route("/delete/:_id").delete(deleteFood);
+
+// @desc    Getfoodbytype
+// @route   GET /api/food/getfoodbytype
+// @access  Public
+
+router.route("/getfoodbytype/:is_free").get(getFoodByType);
 
 router.route("/getall").get(getAllFood);
 

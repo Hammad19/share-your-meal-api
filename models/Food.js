@@ -67,15 +67,12 @@ const FoodSchema = new mongoose.Schema({
         trim: true,
         default: true,
     },
-
-
     // is available
-    is_available: {
+    is_deleted: {
         type: Boolean,
         required: false,
         trim: true,
-        default: true,
-        
+        default: true, 
     },
 
     // Food Created Date
