@@ -21,7 +21,7 @@ export const addFood = async (req, res) =>
             food_shared_by,
             is_free,
             is_active: true,
-            is_available: true,
+            is_deleted: false,
         });
         if (food) 
         {
@@ -95,32 +95,83 @@ export const getAllFood = async (req, res) =>
 // @access  Public
 export const deleteFood = async (req, res) =>
 {
-    const {food_id} = req.body;
-    try 
+    //set is deleted to true where id = req.params.id
+
+
+    console.log(req.params._id);
+    try
     {
-        const food = await Food.findByIdAndDelete(food_id);
-        if (food) 
+        const food = await Food.findById(req.params._id);
+        if (food)
         {
+            food.is_deleted = true;
+            food.save();
             res.status(200).json({
                 message: "Food deleted successfully",
                 success: true,
                 food: food,
             });
-        } 
-        else 
+        }
+        else
         {
             res.status(400);
             throw new Error("Invalid food data");
         }
-    } 
-    catch (error) 
+    }
+    catch (error)
     {
         res.status(400).json({
             message: error.message,
             success: false,
         });
     }
+
 }
+
+// @desc    Update a food
+// @route   PUT http://localhost:8000/api/food/update
+// @access  Public
+export const updateFood = async (req, res) =>
+{
+    const {_id , food_name, food_description, food_price, food_image, food_category,food_quantity,food_shared_by, is_free} = req.body;
+    try
+    {
+        const food = await Food.findById(_id);
+        if (food)
+        {
+            food.food_name = food_name;
+            food.food_description = food_description;
+            food.food_price = food_price;
+            food.food_image = food_image;
+            food.food_category = food_category;
+            food.food_quantity = food_quantity;
+            food.food_shared_by = food_shared_by;
+            food.is_free = is_free;
+            food.is_active = true;
+            food.is_deleted = false;
+            food.save();
+            res.status(200).json({
+                message: "Food updated successfully",
+                success: true,
+                food: food,
+            });
+        }
+        else
+        {
+            res.status(400);
+            throw new Error("Invalid food data");
+        }
+    }
+    catch (error)
+    {
+        res.status(400).json({
+            message: error.message,
+            success: false,
+        });
+    }
+
+}
+
 
 // @desc    getfoodbysharedby
 // @route   GET http://localhost:8000/api/food/getfoodbysharedby
@@ -132,13 +183,10 @@ export const deleteFood = async (req, res) =>
 export const getFoodBySharedBy = async (req, res) =>
 {
     const {food_shared_by} = req.params;
-
-
     try
-
     {
-        //return all foods shared by a particular user
-        const food = await Food.find({food_shared_by: food_shared_by});
+        //return all foods shared by a particular user where is_deleted = false
+        const food = await Food.find({food_shared_by: food_shared_by, is_deleted: false});
 
         //if food is an empty array, then no food is shared by the user
         if (food)
@@ -165,41 +213,31 @@ export const getFoodBySharedBy = async (req, res) =>
     }
 }
 
-// @desc    update food
-// @route   PUT http://localhost:8000/api/food/update
+
+// @desc    getfoodbytype
+// @route   GET http://localhost:8000/api/food/getfoodbytype
 // @access  Public
-export const updateFood = async (req, res) =>
+export const getFoodByType = async (req, res) =>
 {
-    const {food_id,food_name, food_description, food_price, food_image, food_category,food_quantity,food_shared_by, is_free} = req.body;
-    try 
+    const {is_free} = req.params;
+    try
     {
-        const food = await Food.findByIdAndUpdate(food_id,{
-            food_name,
-            food_description,
-            food_price,
-            food_image,
-            food_category,
-            food_quantity,
-            food_shared_by,
-            is_free,
-            is_active: true,
-            is_available: true,
-        });
-        if (food) 
+        const food = await Food.find({is_free: is_free, is_deleted: false, is_active: true});
+        if (food)
         {
             res.status(200).json({
-                message: "Food updated successfully",
+                message: "Food fetched successfully",
                 success: true,
                 food: food,
             });
-        } 
-        else 
+        }
+        else
         {
             res.status(400);
             throw new Error("Invalid food data");
         }
-    } 
-    catch (error) 
+    }
+    catch (error)
     {
         res.status(400).json({
             message: error.message,
