@@ -64,9 +64,14 @@ export const addFood = async (req, res) =>
 // @access  Public
 export const getAllFood = async (req, res) =>
 {
+
+    //return all foods that are not deleted
+
+
+
     try 
     {
-        const food = await Food.find();
+        const food = await Food.find({is_deleted: false});
         if (food) 
         {
             res.status(200).json({
