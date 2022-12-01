@@ -1,17 +1,17 @@
 import mongoose from "mongoose";
 
 // User Schema Definition
-const FoodSchema = new mongoose.Schema({
+const PetSchema = new mongoose.Schema({
 
     // Food Name
-    food_name: {
+    pet_name: {
         type: String,
         required: true,
         trim: true,
     },
 
     // Food Description
-    food_description: {
+    pet_description: {
         type: String,
         required: true,
         trim: true,
@@ -19,47 +19,47 @@ const FoodSchema = new mongoose.Schema({
 
     // Food Price
 
-    food_price: {
+    pet_price: {
         type: Number,
         required: true,
         trim: true,
     },
 
     // Food Image
-    food_image: {
+    pet_image: {
         type: String,
         required: true,
         trim: true,
     },
 
     // Food Category
-    food_category: {
+    pet_category: {
         type: String,
         required: true,
         trim: true,
     },
 
     // Food quantity
-    food_quantity: {
+    pet_quantity: {
         type: Number,
         required: true,
         trim: true,
     },
 
     // food shared by
-    food_shared_by: {
+    pet_shared_by: {
         type: String,
         required: true,
         trim: true,
     },
 
 
-    // is free
-    is_free: {
-        type: Boolean,
-        required: true,
-        trim: true,
-    },
+    // // is free
+    // is_free: {
+    //     type: Boolean,
+    //     required: true,
+    //     trim: true,
+    // },
     //is active
     is_active: {
         type: Boolean,
@@ -86,6 +86,6 @@ const FoodSchema = new mongoose.Schema({
 // define food model
 
 
-const Food = mongoose.model("food", FoodSchema);
+const Pet = mongoose.model("pet", PetSchema);
 
-export default Food;
+export default Pet;
