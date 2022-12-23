@@ -2,7 +2,7 @@
 import User from "../models/Users.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
+import nodemailer from "nodemailer";
 // @desc    Register a new user
 // @route   POST http://localhost:8000/api/users/signup
 // @access  Public
@@ -254,3 +254,100 @@ export const changePassword = async (req, res) => {
         });
     }
 };
+
+
+// @desc forget password
+// @route POST /api/users/forgotpassword
+// @access Public
+// forget password by providing otp to the user
+export const forgetPassword = async (req, res) => {
+    const { email } = req.body;
+    try {
+        const user = await User.findOne ({ email });
+        if (user) {
+
+            const otp = Math.floor(100000 + Math.random() * 900000);
+            const message = `Your OTP is ${otp}`;
+            try {
+                await sendEmail({
+                    email: user.email,
+                    subject: "OTP for password reset",
+                    message,
+                });
+                user.token = otp;
+                await user.save();
+                res.status(200).json({
+                    message: "OTP sent to your email",
+                    success: true,
+                });
+            } catch (error) {
+                res.status(500);
+                throw new Error("Email could not be sent");
+            }
+        }
+        else {
+            res.status(401);
+            throw new Error("Invalid email");
+        }
+    } catch (error) {
+        res.status(400).json({
+            status: "failed",
+            success: false,
+            message: error.message,
+        });
+    }
+};
+
+
+// send email function to send email by nodemailer
+const sendEmail = async (options) => {
+  try {
+
+  console.log(options);
+
+
+
+
+
+
+      const transporter = nodemailer.createTransport(
+
+
+        
+        {
+        
+      
+
+        service: "gmail",
+
+        host: "smtp.gmail.com",
+
+        port: 587,
+        secure: false,
+        auth: {
+          user: process.env.EMAIL_FROM,
+          pass: process.env.EMAIL_PASSWORD,
+        },
+
+
+
+
+    });
+
+    const mailOptions = {
+
+        
+        from: process.env.EMAIL_FROM,
+        to: options.email,
+        subject: options.subject,
+        text: options.message,
+    };
+
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.log(error + "error");
+  }
+}
+
+
+

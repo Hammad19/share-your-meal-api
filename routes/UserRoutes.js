@@ -1,6 +1,6 @@
 // Create User Routes
 import express from "express";
-import { registerUser, loginUser, changePassword } from "../controllers/UserController.js";
+import { registerUser, loginUser, changePassword ,forgetPassword } from "../controllers/UserController.js";
 import { protect } from "../middlewares/auth-middleware.js";
 
 const router = express.Router();
@@ -22,5 +22,14 @@ router.route("/login").post(loginUser);
 // @route   POST /api/users/change-password
 // @access  Private
 router.route("/change-password").post(protect, changePassword);
+
+
+//@ desc forget password
+// @route POST /api/users/forgotpassword
+// @access Public
+
+router.route("/forgotpassword").post(forgetPassword);
+
+
 
 export default router;

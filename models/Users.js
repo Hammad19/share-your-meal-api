@@ -38,6 +38,12 @@ const UserSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+
+    token: {
+        type: String,
+        required: false,
+        default: '',
+    },
 });
 
 // Define User Model

@@ -5,6 +5,7 @@ import express from "express";
 import dbConnection from "./configs/db_connection.js";
 import userRoutes from "./routes/UserRoutes.js";
 import foodRoutes from "./routes/FoodRoutes.js";
+
 const app = express();
 const PORT = process.env.PORT || 8000;
 
