@@ -43,6 +43,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: false,
         default: '',
+        expires: 60,
     },
 });
 

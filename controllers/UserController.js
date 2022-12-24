@@ -266,7 +266,7 @@ export const forgetPassword = async (req, res) => {
         const user = await User.findOne ({ email });
         if (user) {
 
-            const otp = Math.floor(100000 + Math.random() * 900000);
+            const otp = Math.floor(10000 + Math.random() * 90000);
             const message = `Your OTP is ${otp}`;
             try {
                 await sendEmail({
@@ -279,6 +279,7 @@ export const forgetPassword = async (req, res) => {
                 res.status(200).json({
                     message: "OTP sent to your email",
                     success: true,
+                    email: user.email,
                 });
             } catch (error) {
                 res.status(500);
@@ -287,7 +288,7 @@ export const forgetPassword = async (req, res) => {
         }
         else {
             res.status(401);
-            throw new Error("Invalid email");
+            throw new Error("This Email Does not Exist");
         }
     } catch (error) {
         res.status(400).json({
@@ -301,14 +302,9 @@ export const forgetPassword = async (req, res) => {
 
 // send email function to send email by nodemailer
 const sendEmail = async (options) => {
-  try {
+  
 
   console.log(options);
-
-
-
-
-
 
       const transporter = nodemailer.createTransport(
 
@@ -344,10 +340,87 @@ const sendEmail = async (options) => {
     };
 
     await transporter.sendMail(mailOptions);
-  } catch (error) {
-    console.log(error + "error");
-  }
+  
 }
 
+// @desc reset password
+// @route PUT /api/users/resetpassword
+// @access Public
+// reset password by providing otp to the user
+export const reset_Password = async (req, res) => {
 
+    const { email, otp, password, confirm_password } = req.body;
+    try {
+        const user = await User.findOne ({ email });
+        //if otp is expired then throw error
+
+            if (user.token == otp) {
+                if (password === confirm_password) {
+                    const password_salt = await bcrypt.genSalt(10);
+                    const password_hash = await bcrypt.hash(password, password_salt);
+                    user.password = password_hash;
+                    user.confirm_password = password_hash;
+                    user.token = undefined;
+                    await user.save();
+                    res.status(200).json({
+                        message: "Password reset success",
+                        success: true,
+                    });
+                }
+                else {
+                    res.status(401);
+                    throw new Error("Password and Confirm Password does not match");
+                }
+            }
+            else {
+                res.status(401);
+                throw new Error("Invalid OTP");
+            }
+        }
+
+
+
+    catch (error) {
+
+        res.status(400).json({
+            status: "failed",
+            success: false,
+            message: error.message,
+        });
+    }
+};
+
+//verify otp
+export const verifyOtp = async (req, res) => {
+
+    const {email, otp } = req.body;
+    try {
+        const
+            user = await User.findOne({ email
+            });
+        if (user) {
+            if (user.token == otp) {
+                res.status(200).json({
+                    message: "OTP verified",
+                    success: true,
+                    otp: user.token,
+                });
+            }
+            else {
+                res.status(401);
+                throw new Error("Invalid OTP");
+            }
+        }
+        else {
+            res.status(401);
+            throw new Error("This Email Does not Exist");
+        } 
+    } catch (error) {
+        res.status(400).json({
+            status: "failed",
+            success: false,
+            message: error.message,
+        });
+    }
+};
 
