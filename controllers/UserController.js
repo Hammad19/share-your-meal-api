@@ -89,6 +89,7 @@ export const loginUser = async (req, res) => {
           id: user._id,
           email: user.email,
           accounttype: user.accounttype,
+          first_name: user.first_name,
         },
       });
     } else {
@@ -360,7 +361,7 @@ export const reset_Password = async (req, res) => {
                     const password_hash = await bcrypt.hash(password, password_salt);
                     user.password = password_hash;
                     user.confirm_password = password_hash;
-                    user.token = undefined;
+                    user.token = "";
                     await user.save();
                     res.status(200).json({
                         message: "Password reset success",
