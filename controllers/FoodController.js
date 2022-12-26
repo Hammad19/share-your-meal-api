@@ -284,6 +284,46 @@ export const getFoodForCharitableOrganization = async (req, res) =>
     }
 }
 
+//Search foods by name like
+// @desc    searchfoodbyname
+
+// @route   GET http://localhost:8000/api/food/searchfoodbyname
+// @access  Public
+export const searchFoodByName = async (req, res) =>
+{
+    const {food_name} = req.params;
+    try
+    {
+        const food = await Food.find({food_name: {$regex: food_name, $options: "i"}, is_deleted: false, is_active: true});
+        if (food)
+        {
+            res.status(200).json({
+                message: "Food fetched successfully",
+                success: true,
+                food: food,
+            });
+        }
+        else
+        {
+            res.status(400);
+            throw new Error("Invalid food data");
+        }
+    }
+    catch (error)
+    {
+        res.status(400).json({
+            message: error.message,
+            success: false,
+        });
+    }
+}
+
+// @desc    getfoodbycategorypricequantity
+// @route   GET http://localhost:8000/api/food/getfoodbycategorypricequantity
+// @access  Public
+
+
+
 
 
 
