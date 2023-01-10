@@ -56,6 +56,6 @@ router.route("/getfoodforcharitableorganization/:food_quantity/:is_free").get(ge
 // @route   GET /api/food/search/:food_name
 // @access  Public
 
-router.route("/search/:food_name").get(searchFoodByName);
+router.route("/:food_name/:is_free").get(searchFoodByName);
 
 export default router;

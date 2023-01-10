@@ -1,6 +1,6 @@
 // Create User Routes
 import express from "express";
-import { registerUser, loginUser, changePassword ,forgetPassword, verifyOtp, reset_Password } from "../controllers/UserController.js";
+import { registerUser, loginUser, changePassword ,forgetPassword, verifyOtp, reset_Password, verifyOtpForEmail, sendOtpforEmail } from "../controllers/UserController.js";
 import { protect } from "../middlewares/auth-middleware.js";
 
 const router = express.Router();
@@ -41,6 +41,10 @@ router.route("/verifyotp").post(verifyOtp);
 // @route   POST /api/users/reset-password
 // @access  Private
 router.route("/resetpassword").post(reset_Password);
+
+router.route("/sendotpforemail").post(sendOtpforEmail);
+router.route("/verifyotpforemail").post(verifyOtpForEmail);
+
 
 
 export default router;

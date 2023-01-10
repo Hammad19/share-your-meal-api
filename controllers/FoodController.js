@@ -291,10 +291,10 @@ export const getFoodForCharitableOrganization = async (req, res) =>
 // @access  Public
 export const searchFoodByName = async (req, res) =>
 {
-    const {food_name} = req.params;
+    const {food_name,is_free} = req.params;
     try
     {
-        const food = await Food.find({food_name: {$regex: food_name, $options: "i"}, is_deleted: false, is_active: true});
+        const food = await Food.find({food_name: {$regex: food_name, $options: "i"}, is_deleted: false, is_active: true, is_free: is_free});
         if (food)
         {
             res.status(200).json({

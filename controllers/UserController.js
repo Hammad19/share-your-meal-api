@@ -90,6 +90,7 @@ export const loginUser = async (req, res) => {
           email: user.email,
           accounttype: user.accounttype,
           first_name: user.first_name,
+          emailVerified: user.emailVerified,
         },
       });
     } else {
@@ -126,7 +127,7 @@ export const forgotPassword = async (req, res) => {
             "host"
         )}/api/users/resetpassword/${token}`;
     
-        const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
+        const message = ` Please make a PUT request to: \n\n ${resetUrl}`;
     
         try {
             await sendEmail({
@@ -261,6 +262,90 @@ export const changePassword = async (req, res) => {
 // @route POST /api/users/forgotpassword
 // @access Public
 // forget password by providing otp to the user
+
+
+//  @desc send otp for email verification
+//  @route POST /api/users/sendotp
+//  @access Public
+export const sendOtpforEmail = async (req, res) => {
+    const { email } = req.body;
+    try {
+        const user = await  User.findOne ({ email });
+        if (user) {
+            const otp = Math.floor(10000 + Math.random() * 90000);
+            const message = `OTP for Account Verification. Your OTP is ${otp}`;
+            try {
+                await sendEmail({
+                    email: user.email,
+                    subject: "OTP for Account Verification",
+                    message,
+                });
+                user.token = otp;
+                await user.save();
+                res.status(200).json({
+                    message: "OTP sent to your email",
+                    success: true,
+                    email: user.email,
+                });
+            } catch (error) {
+                res.status(500).json({
+                    message: "Email could not be sent",
+                    success: false,
+                });
+            }
+        } else {
+            res.status(401).json({
+                message: "Invalid email",
+                success: false,
+            });
+        }
+    } catch (error) {
+        res.status(400).json({
+            status: "failed",
+            success: false,
+            message: error.message,
+        });
+    }
+};
+
+//  @desc verify otp for email verification
+//  @route POST /api/users/verifyotpforemail
+//  @access Public
+export const verifyOtpForEmail = async (req, res) => {
+    const { email, otp } = req.body;
+    try {
+        const user = await User.findOne ({ email });
+        if (user) {
+            if (user.token === otp) {
+                user.emailVerified = true;
+                user.token = "";
+                await user.save();
+                res.status(200).json({
+                    message: "Email verified successfully",
+                    success: true,
+                });
+            } else {
+                res.status(401).json({
+                    message: "Invalid OTP",
+                    success: false,
+                });
+            }
+        }
+    } catch (error) {
+        res.status(400).json({
+            status: "failed",
+            success: false,
+            message: error.message,
+        });
+    }
+    
+};
+
+
+
+
+
+
 export const forgetPassword = async (req, res) => {
     const { email } = req.body;
     try {
@@ -268,11 +353,11 @@ export const forgetPassword = async (req, res) => {
         if (user) {
 
             const otp = Math.floor(10000 + Math.random() * 90000);
-            const message = `Your OTP is ${otp}`;
+            const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Your OTP is ${otp}`;
             try {
                 await sendEmail({
                     email: user.email,
-                    subject: "OTP for password reset",
+                    subject: "OTP for Password Reset",
                     message,
                 });
                 user.token = otp;
