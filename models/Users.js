@@ -24,6 +24,21 @@ const UserSchema = new mongoose.Schema({
         trim: true,
     },
 
+    coord : {
+        type :Object,
+        required: false,
+        trim: true,
+    },
+
+
+    location_name: {
+        type: String,
+        required: false,
+        trim: true,
+    },
+    
+
+
     accounttype: {
         type: String,
         required: true,

@@ -27,6 +27,7 @@ const FoodSchema = new mongoose.Schema({
 
     // Food Image
     food_image: {
+
         type: String,
         required: true,
         trim: true,
@@ -53,6 +54,11 @@ const FoodSchema = new mongoose.Schema({
         trim: true,
     },
 
+    food_location: {
+        type: String,
+        required: true,
+        trim: true,
+    },
 
     // is free
     is_free: {

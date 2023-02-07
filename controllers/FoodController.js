@@ -1,5 +1,6 @@
 // Create User Controller
 import Food from "../models/Food.js";
+import Users from "../models/Users.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -8,9 +9,17 @@ import jwt from "jsonwebtoken";
 // @access  Public
 export const addFood = async (req, res) => 
 {
-    const {food_name, food_description, food_price, food_image, food_category,food_quantity,food_shared_by, is_free} = req.body;
+
+    
+
+    const {food_name, food_description, food_price, food_image, food_category,food_quantity,food_shared_by, is_free,food_location} = req.body;
     try 
     {
+
+
+        const user = await Users.findOne({ email: req.body.food_shared_by });
+
+        
         const food = await Food.create({
             food_name,
             food_description,
@@ -22,7 +31,11 @@ export const addFood = async (req, res) =>
             is_free,
             is_active: true,
             is_deleted: false,
+            food_location: user.location_name?user.location_name:"Unknown Address",
+
         });
+
+        
         if (food) 
         {
             res.status(200).json({
@@ -40,6 +53,7 @@ export const addFood = async (req, res) =>
                     is_free: food.is_free,
                     is_active: food.is_active,
                     is_available: food.is_available,
+                    food_location: food.food_location,
 
                 },
             });
@@ -49,6 +63,8 @@ export const addFood = async (req, res) =>
             res.status(400);
             throw new Error("Invalid food data");
         }
+    
+        
     } 
     catch (error) 
     {

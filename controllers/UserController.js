@@ -88,9 +88,13 @@ export const loginUser = async (req, res) => {
         user: {
           id: user._id,
           email: user.email,
+
+          location_name: user.location_name,
+          coord: user.coord,
           accounttype: user.accounttype,
           first_name: user.first_name,
           emailVerified: user.emailVerified,
+
         },
       });
     } else {
@@ -509,4 +513,48 @@ export const verifyOtp = async (req, res) => {
         });
     }
 };
+
+
+// @desc update user profile
+// @route PUT /api/users/addlocation
+// @access Private
+
+export const addLocation = async (req, res) => {
+
+    const { location, coord } = req.body;
+    try {
+        const user = await User.findById(req.user._id);
+        if (user) {
+            user.location_name = location_name;
+            user.coord = coord;
+            await user.save();
+            res.status(200).json({
+                message: "Location added successfully",
+                success: true,
+                user: {
+                    id: user._id,
+                    email: user.email,
+                    location_name: user.location_name,
+                    coord: user.coord,
+                    accounttype: user.accounttype,
+                    first_name: user.first_name,
+                    emailVerified: user.emailVerified,
+          
+                  },
+            });
+        }
+        else {
+            res.status(401);
+            throw new Error("User not found");
+        }
+    } catch (error) {
+        res.status(400).json({
+            status: "failed",
+            success: false,
+            message: error.message,
+        });
+    }
+}
+
+
 
