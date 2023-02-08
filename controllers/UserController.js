@@ -32,7 +32,9 @@ export const registerUser = async (req, res) => {
       first_name,
       email,
       password: password_hash,
-      accounttype
+      accounttype,
+      coord : {lat: 0, lng: 0},
+      location_name: "",
     });
 
     // create token for the user
@@ -521,11 +523,11 @@ export const verifyOtp = async (req, res) => {
 
 export const addLocation = async (req, res) => {
 
-    const { location, coord } = req.body;
+    const {user_id, location, coord } = req.body;
     try {
-        const user = await User.findById(req.user._id);
+        const user = await User.findById({_id:user_id});
         if (user) {
-            user.location_name = location_name;
+            user.location_name = location;
             user.coord = coord;
             await user.save();
             res.status(200).json({
