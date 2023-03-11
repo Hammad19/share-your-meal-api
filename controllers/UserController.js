@@ -90,7 +90,6 @@ export const loginUser = async (req, res) => {
         user: {
           id: user._id,
           email: user.email,
-
           location_name: user.location_name,
           coord: user.coord,
           accounttype: user.accounttype,
