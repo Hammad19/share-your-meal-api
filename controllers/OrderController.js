@@ -38,6 +38,12 @@ export const orderFood = async (req, res) => {
     const food = await Food.findById({ _id: order_food_id });
 
     if (food) {
+      //check if the food_shared_by is same as ordered_by
+      if (food.food_shared_by == ordered_by) {
+        res.status(400);
+        throw new Error("You cannot order your own food");
+      }
+
       //check quantity
       if (food.food_quantity >= order_quantity) {
         //check if food is free
