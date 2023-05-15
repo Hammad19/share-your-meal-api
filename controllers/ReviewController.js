@@ -6,23 +6,39 @@ import User from "../models/Users.js";
 // @access  Private
 
 export const createReview = async (req, res) => {
-  const { review, rating, user, ratedBy, food } = req.body;
+  const { review, rating, user_email, ratedBy_email, order, food } = req.body;
 
-  //check if the same user has rated the same food
-  const checkReview = await Review.findOne({ user: user, food: food });
-  //if Review is Found throw error
+  //get user id and rated by id
+  const user = await User.findOne({ email: user_email });
+  const ratedBy = await User.findOne({ email: ratedBy_email });
+
+  //check with id if same user has reveiwed same food
+
+  const checkReview = await Review.findOne({
+    user: user,
+    ratedBy: ratedBy,
+    food: food,
+  });
+
   if (checkReview) {
-    res.status(400);
-    throw new Error("You have already rated this food");
+    res.status(400).json({
+      message: "You have already reviewed this food",
+      success: false,
+    });
+
+    return;
   }
 
   try {
+    //create review
     const newReview = await Review.create({
       review,
       rating,
-      user,
+      user: user._id,
+      user_email,
+      ratedBy: ratedBy._id,
+      ratedBy_email,
       food,
-      ratedBy: ratedBy,
     });
     if (newReview) {
       const newUser = await User.findOneAndUpdate(

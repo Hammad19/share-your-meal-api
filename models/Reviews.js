@@ -12,9 +12,17 @@ const ReviewSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  //keep an array of user id with its email
+
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "user",
+  },
+
+  user_email: {
+    type: String,
+    required: true,
+    trim: true,
   },
 
   order: {
@@ -22,7 +30,17 @@ const ReviewSchema = new mongoose.Schema({
     ref: "order",
   },
 
+  food: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "food",
+  },
+
   ratedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+  },
+
+  ratedBy_email: {
     type: String,
     required: true,
     trim: true,
