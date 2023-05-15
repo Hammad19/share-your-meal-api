@@ -58,12 +58,53 @@ export const createReview = async (req, res) => {
   }
 };
 
-export const getReviews = async (req, res) => {
-  //get  id
-  const { user } = req.params;
+export const getReviewsByUser = async (req, res) => {
+  const user_email = req.params.user;
+  console.log(user_email);
+
+  //get user id
+  const user = await User.findOne({ email: user_email });
 
   try {
-    const reviews = await Review.find({ user: user }).populate("user");
+    const reviews = await Review.find({ user: user });
+    if (reviews) {
+      res.status(200).json({ reviews });
+    }
+  } catch (error) {
+    res.status(400).json({
+      message: error.message,
+      success: false,
+    });
+  }
+};
+
+export const getReviewsByRatedBy = async (req, res) => {
+  const ratedBy_email = req.params.ratedBy;
+  console.log(ratedBy_email);
+
+  //get user id
+  const ratedBy = await User.findOne({ email: ratedBy_email });
+
+  try {
+    const reviews = await Review.find({ ratedBy: ratedBy });
+    if (reviews) {
+      res.status(200).json({ reviews });
+    }
+  } catch (error) {
+    res.status(400).json({
+      message: error.message,
+      success: false,
+    });
+  }
+};
+
+//get reviews of ordered food
+export const getReviewsByFood = async (req, res) => {
+  const food_id = req.params.food;
+  console.log(food_id);
+
+  try {
+    const reviews = await Review.find({ food: food_id });
     if (reviews) {
       res.status(200).json({ reviews });
     }
