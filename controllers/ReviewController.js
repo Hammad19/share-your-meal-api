@@ -39,6 +39,7 @@ export const createReview = async (req, res) => {
       ratedBy: ratedBy._id,
       ratedBy_email,
       food,
+      order,
     });
     if (newReview) {
       const newUser = await User.findOneAndUpdate(

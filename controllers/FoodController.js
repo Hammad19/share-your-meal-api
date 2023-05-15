@@ -23,10 +23,10 @@ export const addFood = async (req, res) => {
     const user = await Users.findOne({ email: req.body.food_shared_by });
 
     //check if the user has location name
-    if (user.location_name.length === 0) {
-      res.status(400);
-      throw new Error("Please update your location");
-    }
+    // if (user.location_name.length === 0) {
+    //   res.status(400);
+    //   throw new Error("Please update your location");
+    // }
 
     const food = await Food.create({
       food_name,
