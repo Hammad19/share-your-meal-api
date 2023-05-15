@@ -8,6 +8,7 @@ import userRoutes from "./routes/UserRoutes.js";
 import foodRoutes from "./routes/FoodRoutes.js";
 import orderRoutes from "./routes/OrderRoutes.js";
 import imageRoutes from "./routes/ImageRoutes.js";
+import ReviewRoutes from "./routes/ReviewRoutes.js";
 const app = express();
 const PORT = process.env.PORT || 8000;
 
@@ -33,6 +34,7 @@ app.use("/api/images", imageRoutes);
 app.use("/api/food", foodRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/reviews", ReviewRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server listening at http://localhost:${PORT}`);
