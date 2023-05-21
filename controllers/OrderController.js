@@ -76,6 +76,10 @@ export const orderFood = async (req, res) => {
               order_status: "pending",
             });
             order.save();
+
+            //issue a notification here
+            //send notification to food shared_by
+
             res.status(200).json({
               message: "Order Requested successfully",
               success: true,
