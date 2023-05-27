@@ -95,6 +95,8 @@ export const orderFood = async (req, res) => {
               message: "Your order request has been placed successfully",
             });
 
+            notifyToOrderedBy.save();
+
             res.status(200).json({
               message: "Order Requested successfully",
               success: true,
