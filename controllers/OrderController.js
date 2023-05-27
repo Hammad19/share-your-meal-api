@@ -38,6 +38,11 @@ export const orderFood = async (req, res) => {
 
     const food = await Food.findById({ _id: order_food_id });
 
+    if (order_quantity <= 0) {
+      res.status(400);
+      throw new Error("Order quantity cannot be 0");
+    }
+
     if (food) {
       //check if the food_shared_by is same as ordered_by
       if (food.food_shared_by == ordered_by) {
@@ -81,21 +86,21 @@ export const orderFood = async (req, res) => {
             //issue a notification here
             //send notification to ordered by
 
-            const notifyToSharedBy = new Notifications({
-              user_email: food.food_shared_by,
-              message: "You have a new order request for your food item",
-            });
+            // const notifyToSharedBy = new Notifications({
+            //   user_email: food.food_shared_by,
+            //   message: "You have a new order request for your food item",
+            // });
 
-            notifyToSharedBy.save();
+            // notifyToSharedBy.save();
 
-            //send notification to orderedby
+            // //send notification to orderedby
 
-            const notifyToOrderedBy = new Notifications({
-              user_email: ordered_by,
-              message: "Your order request has been placed successfully",
-            });
+            // const notifyToOrderedBy = new Notifications({
+            //   user_email: ordered_by,
+            //   message: "Your order request has been placed successfully",
+            // });
 
-            notifyToOrderedBy.save();
+            // notifyToOrderedBy.save();
 
             res.status(200).json({
               message: "Order Requested successfully",

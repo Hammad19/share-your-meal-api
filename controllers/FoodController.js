@@ -221,6 +221,7 @@ export const getFoodByType = async (req, res) => {
       is_free: is_free,
       is_deleted: false,
       is_active: true,
+      food_quantity: { $gt: 0 },
     });
     if (food) {
       res.status(200).json({
