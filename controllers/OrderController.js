@@ -129,22 +129,22 @@ export const orderFood = async (req, res) => {
           });
           order.save();
 
-          //send notification to both
+          // //send notification to both
 
-          const notifyToSharedBy = new Notifications({
-            user_email: food.food_shared_by,
-            message: "You have a new order for your food item by " + ordered_by,
-          });
+          // const notifyToSharedBy = new Notifications({
+          //   user_email: food.food_shared_by,
+          //   message: "You have a new order for your food item by " + ordered_by,
+          // });
 
-          notifyToSharedBy.save();
+          // notifyToSharedBy.save();
 
-          //send notification to orderedby
-          const notifyToOrderedBy = new Notifications({
-            user_email: ordered_by,
-            message: "Your order has been placed successfully",
-          });
+          // //send notification to orderedby
+          // const notifyToOrderedBy = new Notifications({
+          //   user_email: ordered_by,
+          //   message: "Your order has been placed successfully",
+          // });
 
-          notifyToOrderedBy.save();
+          // notifyToOrderedBy.save();
 
           res.status(200).json({
             message: "Order placed successfully",
