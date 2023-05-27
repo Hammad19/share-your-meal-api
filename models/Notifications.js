@@ -2,9 +2,11 @@ import mongoose from "mongoose";
 
 const NotificationSchema = new mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
-  user_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
+
+  user_email: {
+    type: String,
+    required: true,
+    trim: true,
   },
   message: {
     type: String,
@@ -19,3 +21,4 @@ const NotificationSchema = new mongoose.Schema({
 });
 
 const Notification = mongoose.model("notification", NotificationSchema);
+export default Notification;

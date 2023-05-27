@@ -1,3 +1,4 @@
+import Food from "../models/Food.js";
 import Review from "../models/Reviews.js";
 import User from "../models/Users.js";
 
@@ -42,13 +43,31 @@ export const createReview = async (req, res) => {
       order,
     });
     if (newReview) {
-      const newUser = await User.findOneAndUpdate(
-        { _id: user },
-        { $push: { reviews: newReview._id } },
-        { new: true }
-      );
-      if (newUser) {
-        res.status(200).json({ newReview });
+      //get average of all reviews of food shared by and update it on every food shared by that user
+      const reviews = await Review.find({ user_email: user_email });
+      if (reviews) {
+        let total = 0;
+        let average = 0;
+        let count = 0;
+        reviews.forEach((review) => {
+          total += review.rating;
+          count++;
+        });
+        average = total / count;
+
+        //update all food_rating shared by this user
+        const updatedFood = await Food.updateMany(
+          { food_shared_by: user_email },
+          { $set: { food_rating: average } }
+        );
+
+        if (updatedFood) {
+          res.status(200).json({
+            message: "Review added successfully",
+            success: true,
+            review: newReview,
+          });
+        }
       }
     }
   } catch (error) {
@@ -69,7 +88,20 @@ export const getReviewsByUser = async (req, res) => {
   try {
     const reviews = await Review.find({ user: user });
     if (reviews) {
-      res.status(200).json({ reviews });
+      //take out average and send
+      let total = 0;
+      let average = 0;
+      let count = 0;
+      reviews.forEach((review) => {
+        total += review.rating;
+        count++;
+      });
+
+      average = total / count;
+      res.status(200).json({
+        reviews,
+        average,
+      });
     }
   } catch (error) {
     res.status(400).json({

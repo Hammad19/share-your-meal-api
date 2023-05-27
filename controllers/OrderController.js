@@ -1,6 +1,7 @@
 import Food from "../models/Food.js";
 import Users from "../models/Users.js";
 import Order from "../models/Order.js";
+import Notifications from "../models/Notifications.js";
 
 // @desc    Get all ordered food by a user
 // @route   GET /api/food/ordered
@@ -78,7 +79,21 @@ export const orderFood = async (req, res) => {
             order.save();
 
             //issue a notification here
-            //send notification to food shared_by
+            //send notification to ordered by
+
+            const notifyToSharedBy = new Notifications({
+              user_email: food.food_shared_by,
+              message: "You have a new order request for your food item",
+            });
+
+            notifyToSharedBy.save();
+
+            //send notification to orderedby
+
+            const notifyToOrderedBy = new Notifications({
+              user_email: ordered_by,
+              message: "Your order request has been placed successfully",
+            });
 
             res.status(200).json({
               message: "Order Requested successfully",
@@ -106,6 +121,24 @@ export const orderFood = async (req, res) => {
             order_status: "placed",
           });
           order.save();
+
+          //send notification to both
+
+          const notifyToSharedBy = new Notifications({
+            user_email: food.food_shared_by,
+            message: "You have a new order for your food item by " + ordered_by,
+          });
+
+          notifyToSharedBy.save();
+
+          //send notification to orderedby
+          const notifyToOrderedBy = new Notifications({
+            user_email: ordered_by,
+            message: "Your order has been placed successfully",
+          });
+
+          notifyToOrderedBy.save();
+
           res.status(200).json({
             message: "Order placed successfully",
             success: true,
@@ -150,6 +183,23 @@ export const acceptOrder = async (req, res) => {
             //update order status to placed
             order.order_status = "placed";
             order.save();
+
+            //send a notification to ordered_by
+
+            const notifyToOrderedBy = new Notifications({
+              user_email: order.ordered_by,
+              message: "Your order has been accepted successfully",
+            });
+            await notifyToOrderedBy.save();
+
+            //notify to order shared by
+            const notifyToSharedBy = new Notifications({
+              user_email: order.order_shared_by,
+              message: "You have Accepted The Order of " + ordered_by,
+            });
+
+            await notifyToSharedBy.save();
+
             res.status(200).json({
               message: "Order accepted successfully",
               success: true,
@@ -194,6 +244,22 @@ export const rejectOrder = async (req, res) => {
         //update order status to rejected
         order.order_status = "rejected";
         order.save();
+
+        //send a notification to ordered_by
+
+        const notifyToOrderedBy = new Notifications({
+          user_email: order.ordered_by,
+          message: "Your order has been rejected",
+        });
+        await notifyToOrderedBy.save();
+        //send a notification to ordered_to
+        const notifyToOrderedTo = new Notifications({
+          user_email: order.order_shared_by,
+          message: "You have rejected the order of " + ordered_by,
+        });
+
+        await notifyToOrderedTo.save();
+
         res.status(200).json({
           message: "Order rejected successfully",
           success: true,
