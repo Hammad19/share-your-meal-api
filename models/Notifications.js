@@ -6,9 +6,19 @@ const NotificationSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  title: {
+    type: String,
+    required: false,
+    trim: true,
+  },
   message: {
     type: String,
     required: true,
+    trim: true,
+  },
+  notification_image: {
+    type: String,
+    required: false,
     trim: true,
   },
 

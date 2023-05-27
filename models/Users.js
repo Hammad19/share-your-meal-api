@@ -50,7 +50,11 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-
+  user_avatar: {
+    type: String,
+    required: false,
+    trim: true,
+  },
   token: {
     type: String,
     required: false,

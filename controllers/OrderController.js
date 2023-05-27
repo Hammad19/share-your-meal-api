@@ -89,6 +89,8 @@ export const orderFood = async (req, res) => {
             const notifyToSharedBy = new Notifications({
               user_email: food.food_shared_by,
               message: "You have a new order request for your food item",
+              title: "New Order Request",
+              notification_image: order.order_image,
             });
 
             notifyToSharedBy.save();
@@ -98,6 +100,8 @@ export const orderFood = async (req, res) => {
             const notifyToOrderedBy = new Notifications({
               user_email: ordered_by,
               message: "Your order request has been placed successfully",
+              title: "Order Requested",
+              notification_image: order.order_image,
             });
 
             notifyToOrderedBy.save();
@@ -134,6 +138,8 @@ export const orderFood = async (req, res) => {
           const notifyToSharedBy = new Notifications({
             user_email: food.food_shared_by,
             message: "You have a new order for your food item by " + ordered_by,
+            title: "New Order",
+            notification_image: order.order_image,
           });
 
           notifyToSharedBy.save();
@@ -142,6 +148,8 @@ export const orderFood = async (req, res) => {
           const notifyToOrderedBy = new Notifications({
             user_email: ordered_by,
             message: "Your order has been placed successfully",
+            title: "Order Placed",
+            notification_image: order.order_image,
           });
 
           notifyToOrderedBy.save();
@@ -196,6 +204,8 @@ export const acceptOrder = async (req, res) => {
             const notifyToOrderedBy = new Notifications({
               user_email: order.ordered_by,
               message: "Your order has been accepted successfully",
+              title: "Order Accepted",
+              notification_image: order.order_image,
             });
             await notifyToOrderedBy.save();
 
@@ -203,6 +213,8 @@ export const acceptOrder = async (req, res) => {
             const notifyToSharedBy = new Notifications({
               user_email: order.order_shared_by,
               message: "You have Accepted The Order of " + ordered_by,
+              title: "Order Accepted",
+              notification_image: order.order_image,
             });
 
             await notifyToSharedBy.save();
@@ -257,12 +269,15 @@ export const rejectOrder = async (req, res) => {
         const notifyToOrderedBy = new Notifications({
           user_email: order.ordered_by,
           message: "Your order has been rejected",
+          title: "Order Rejected",
+          notification_image: order.order_image,
         });
         await notifyToOrderedBy.save();
         //send a notification to ordered_to
         const notifyToOrderedTo = new Notifications({
           user_email: order.order_shared_by,
           message: "You have rejected the order of " + ordered_by,
+          title: "Order Rejected",
         });
 
         await notifyToOrderedTo.save();
