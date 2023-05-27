@@ -1,8 +1,6 @@
 import mongoose from "mongoose";
 
 const NotificationSchema = new mongoose.Schema({
-  _id: mongoose.Schema.Types.ObjectId,
-
   user_email: {
     type: String,
     required: true,
