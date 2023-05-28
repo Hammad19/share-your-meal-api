@@ -7,8 +7,14 @@ import nodemailer from "nodemailer";
 // @route   POST http://localhost:8000/api/users/signup
 // @access  Public
 export const registerUser = async (req, res) => {
-  const { first_name, email, password, confirm_password, accounttype } =
-    req.body;
+  const {
+    first_name,
+    email,
+    password,
+    confirm_password,
+    accounttype,
+    phone_number,
+  } = req.body;
 
   try {
     // check if confirm password matches password else throw error
@@ -36,6 +42,7 @@ export const registerUser = async (req, res) => {
       accounttype,
       coord: { lat: 0, lng: 0 },
       location_name: "",
+      phone_number,
     });
 
     // create token for the user
@@ -52,6 +59,7 @@ export const registerUser = async (req, res) => {
           id: user._id,
           email: user.email,
           accounttype: user.accounttype,
+          phone_number: user.phone_number,
         },
       });
     } else {

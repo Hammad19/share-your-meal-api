@@ -55,6 +55,13 @@ const UserSchema = new mongoose.Schema({
     required: false,
     trim: true,
   },
+
+  phone_number: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+
   token: {
     type: String,
     required: false,

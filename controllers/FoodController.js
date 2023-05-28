@@ -1,5 +1,6 @@
 // Create User Controller
 import Food from "../models/Food.js";
+import User from "../models/Users.js";
 import Users from "../models/Users.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -224,10 +225,31 @@ export const getFoodByType = async (req, res) => {
       food_quantity: { $gt: 0 },
     });
     if (food) {
+      //iterate over food items get phone numbers of food_shared_by and send it with every food
+      let foodWithPhoneNumbers = [];
+      for (let i = 0; i < food.length; i++) {
+        const phoneNumbers = await User.find({ email: food[i].food_shared_by });
+        foodWithPhoneNumbers.push({
+          id: food[i]._id,
+          food_name: food[i].food_name,
+          food_description: food[i].food_description,
+          food_price: food[i].food_price,
+          food_image: food[i].food_image,
+          food_category: food[i].food_category,
+          food_quantity: food[i].food_quantity,
+          food_shared_by: food[i].food_shared_by,
+          is_free: food[i].is_free,
+          is_active: food[i].is_active,
+          is_available: food[i].is_available,
+          food_location: food[i].food_location,
+          phone_number: phoneNumbers[0].phone_number,
+        });
+      }
+
       res.status(200).json({
         message: "Food fetched successfully",
         success: true,
-        food: food,
+        food: foodWithPhoneNumbers,
       });
     } else {
       res.status(400);
