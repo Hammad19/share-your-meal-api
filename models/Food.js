@@ -52,6 +52,12 @@ const FoodSchema = new mongoose.Schema({
     trim: true,
   },
 
+  phone_number: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+
   food_location: {
     type: String,
     required: true,

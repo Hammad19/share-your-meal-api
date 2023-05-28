@@ -103,6 +103,7 @@ export const loginUser = async (req, res) => {
           accounttype: user.accounttype,
           first_name: user.first_name,
           emailVerified: user.emailVerified,
+          phone_number: user.phone_number,
         },
       });
     } else {
