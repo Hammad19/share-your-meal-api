@@ -19,6 +19,7 @@ export const addFood = async (req, res) => {
     food_shared_by,
     is_free,
     food_location,
+    phone_number,
   } = req.body;
   try {
     const user = await Users.findOne({ email: req.body.food_shared_by });
@@ -43,6 +44,7 @@ export const addFood = async (req, res) => {
       food_location: user.location_name
         ? user.location_name
         : "Unknown Address",
+      phone_number,
     });
 
     if (food) {
@@ -62,6 +64,7 @@ export const addFood = async (req, res) => {
           is_active: food.is_active,
           is_available: food.is_available,
           food_location: food.food_location,
+          phone_number: food.phone_number,
         },
       });
     } else {
