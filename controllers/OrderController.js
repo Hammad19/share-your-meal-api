@@ -182,7 +182,7 @@ export const orderFood = async (req, res) => {
 
 export const acceptOrder = async (req, res) => {
   try {
-    const { order_id, order_food_id, order_quantity } = req.body;
+    const { order_id, order_food_id, order_quantity, ordered_by } = req.body;
 
     const order = await Order.findById({ _id: order_id });
     if (order) {
@@ -254,7 +254,7 @@ export const acceptOrder = async (req, res) => {
 
 export const rejectOrder = async (req, res) => {
   try {
-    const { order_id, order_food_id, order_quantity } = req.body;
+    const { order_id, order_food_id, order_quantity, ordered_by } = req.body;
 
     const order = await Order.findById({ _id: order_id });
     if (order) {
@@ -262,6 +262,7 @@ export const rejectOrder = async (req, res) => {
       if (order.order_status === "pending") {
         //update order status to rejected
         order.order_status = "rejected";
+        order.is_active = false;
         order.save();
 
         //send a notification to ordered_by
@@ -289,7 +290,7 @@ export const rejectOrder = async (req, res) => {
         });
       } else {
         res.status(400);
-        throw new Error("Order already accepted");
+        throw new Error("Order already " + order.order_status);
       }
     } else {
       res.status(400);
@@ -344,6 +345,76 @@ export const getRejectedRequests = async (req, res) => {
     } else {
       res.status(400);
       throw new Error("Order not found");
+    }
+  } catch (error) {
+    res.status(400).json({
+      message: error.message,
+      success: false,
+    });
+  }
+};
+//cenceled order and revert food quantity
+export const cancelOrder = async (req, res) => {
+  try {
+    const { order_id, order_food_id, order_quantity, order_shared_by } =
+      req.body;
+
+    const order = await Order.findById({ _id: order_id });
+    if (order) {
+      //check if order is pending
+      if (order.order_status === "placed") {
+        //check if food quantity is sufficient
+        const food = await Food.findById({ _id: order_food_id });
+        if (food) {
+          //add food quantity
+          food.food_quantity = food.food_quantity + order_quantity;
+          food.save();
+          //update order status to placed
+          order.order_status = "cancelled";
+          order.is_active = false;
+          order.save();
+
+          //send a notification to ordered_by
+
+          const notifyToOrderedBy = new Notifications({
+            user_email: order.ordered_by,
+            message: "Your order has been cancelled successfully",
+            title: "Order Cancelled",
+            notification_image: order.order_image,
+          });
+          await notifyToOrderedBy.save();
+
+          //notify to order shared by
+          const notifyToSharedBy = new Notifications({
+            user_email: order.order_shared_by,
+            message: "You have cancelled The Order of " + order_shared_by,
+            title: "Order Cancelled",
+            notification_image: order.order_image,
+          });
+
+          await notifyToSharedBy.save();
+
+          res.status(200).json({
+            message: "Order cancelled successfully",
+            success: true,
+            order,
+          });
+        } else {
+          res.status(400);
+          throw new Error("Invalid food data");
+        }
+      } else {
+        if (order.order_status === "cancelled") {
+          res.status(400);
+          throw new Error("Order already cancelled");
+        } else {
+          res.status(400);
+          throw new Error("Order cannot be cancelled");
+        }
+      }
+    } else {
+      res.status(400);
+      throw new Error("Invalid order data");
     }
   } catch (error) {
     res.status(400).json({
