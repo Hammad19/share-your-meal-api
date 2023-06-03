@@ -1,10 +1,20 @@
 // Create User Routes
 import express from "express";
-import { registerUser, loginUser, changePassword ,forgetPassword, verifyOtp, reset_Password, verifyOtpForEmail, sendOtpforEmail,addLocation } from "../controllers/UserController.js";
+import {
+  registerUser,
+  loginUser,
+  changePassword,
+  forgetPassword,
+  verifyOtp,
+  reset_Password,
+  verifyOtpForEmail,
+  sendOtpforEmail,
+  addLocation,
+  updateUserProfile,
+} from "../controllers/UserController.js";
 import { protect } from "../middlewares/auth-middleware.js";
 
 const router = express.Router();
-
 
 // PUBLIC ROUTES
 // @desc    Register a new user
@@ -23,7 +33,6 @@ router.route("/login").post(loginUser);
 // @access  Private
 router.route("/change-password").post(protect, changePassword);
 
-
 //@ desc forget password
 // @route POST /api/users/forgotpassword
 // @access Public
@@ -36,7 +45,6 @@ router.route("/forgetpassword").post(forgetPassword);
 
 router.route("/verifyotp").post(verifyOtp);
 
-
 // @desc    Reset user password
 // @route   POST /api/users/reset-password
 // @access  Private
@@ -45,16 +53,16 @@ router.route("/resetpassword").post(reset_Password);
 router.route("/sendotpforemail").post(sendOtpforEmail);
 router.route("/verifyotpforemail").post(verifyOtpForEmail);
 
-
 // @desc   add location
 // @route   POST /api/users/addlocation
 // @access  Private
 
 router.route("/location").post(addLocation);
 
+//update user profile
+// @route   POST /api/users/updateprofile
+// @access  Private
 
-
-
-
+router.route("/updateprofile").post(updateUserProfile);
 
 export default router;
