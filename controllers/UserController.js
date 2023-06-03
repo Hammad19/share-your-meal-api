@@ -79,11 +79,11 @@ export const registerUser = async (req, res) => {
 // @route   PUT /api/users/profile
 // @access  Public
 export const updateUserProfile = async (req, res) => {
-  const { first_name, last_name, user_avatar } = req.body;
+  const { first_name, last_name, user_avatar, email } = req.body;
 
   try {
     // Check if user exists then update user phone number, first name, last name and user avatar
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email });
     if (user) {
       (user.first_name = first_name),
         (user.last_name = last_name),
