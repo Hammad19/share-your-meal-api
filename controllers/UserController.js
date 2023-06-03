@@ -75,6 +75,38 @@ export const registerUser = async (req, res) => {
   }
 };
 
+// @desc    updated user profile
+// @route   PUT /api/users/profile
+// @access  Public
+export const updateUserProfile = async (req, res) => {
+  const { first_name, last_name, user_avatar } = req.body;
+
+  try {
+    // Check if user exists then update user phone number, first name, last name and user avatar
+    const user = await User.findOne({ email });
+    if (user) {
+      (user.first_name = first_name),
+        (user.last_name = last_name),
+        (user.user_avatar = user_avatar);
+      const updatedUser = await user.save();
+      res.status(200).json({
+        message: "User updated successfully",
+        success: true,
+        user: updatedUser,
+      });
+    } else {
+      res.status(400);
+      throw new Error("Invalid user data");
+    }
+  } catch (error) {
+    res.status(400).json({
+      status: "failed",
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 // @desc    Login a user
 // @route   POST /api/users/login
 // @access  Public
