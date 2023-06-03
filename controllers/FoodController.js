@@ -25,7 +25,7 @@ export const addFood = async (req, res) => {
     const user = await Users.findOne({ email: req.body.food_shared_by });
 
     //check if the user has location name
-    // if (user.location_name.length === 0) {
+    // if (user.location_name.length === 0)
     //   res.status(400);
     //   throw new Error("Please update your location");
     // }
@@ -322,42 +322,24 @@ export const getFoodByFilter = async (req, res) => {
     if (food_category !== "all") {
       filter.food_category = food_category;
     }
-    if (food_price !== 0) {
+    if (food_price !== "0") {
       filter.food_price = { $lte: food_price };
     }
-    if (food_rating !== 0.0) {
+    if (food_rating !== "0") {
       filter.food_rating = { $gte: food_rating };
     }
-    if (food_quantity !== 0) {
+    if (food_quantity !== "0") {
       filter.food_quantity = { $gte: food_quantity };
     }
 
+    console.log(filter);
     const food = await Food.find(filter);
 
     if (food) {
-      let foodWithPhoneNumbers = [];
-      for (let i = 0; i < food.length; i++) {
-        const phoneNumbers = await User.find({ email: food[i].food_shared_by });
-        foodWithPhoneNumbers.push({
-          id: food[i]._id,
-          food_name: food[i].food_name,
-          food_description: food[i].food_description,
-          food_price: food[i].food_price,
-          food_image: food[i].food_image,
-          food_category: food[i].food_category,
-          food_quantity: food[i].food_quantity,
-          food_shared_by: food[i].food_shared_by,
-          is_free: food[i].is_free,
-          is_active: food[i].is_active,
-          is_available: food[i].is_available,
-          food_location: food[i].food_location,
-          phone_number: phoneNumbers[0].phone_number,
-        });
-      }
       res.status(200).json({
         message: "Food fetched successfully",
         success: true,
-        food: foodWithPhoneNumbers,
+        food: food,
       });
     } else {
       res.status(400);
