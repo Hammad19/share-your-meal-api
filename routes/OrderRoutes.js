@@ -8,6 +8,7 @@ import {
   getPendingRequests,
   getRejectedRequests,
   cancelOrder,
+  orderPickedUp,
 } from "../controllers/OrderController.js";
 const router = express.Router();
 
@@ -45,6 +46,14 @@ router.route("/rejectorder").put(rejectOrder);
 // @access  Public
 
 router.route("/cancelorder").put(cancelOrder);
+
+// @desc    order picked up
+
+// @route   PUT /api/food/orderpickedup
+
+// @access  Public
+
+router.route("/orderpickedup").put(orderPickedUp);
 
 // @desc    Get all pending requests
 // @route   GET /api/food/getpendingrequests
