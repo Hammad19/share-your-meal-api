@@ -53,74 +53,26 @@ export const orderFood = async (req, res) => {
       //check quantity
       if (food.food_quantity >= order_quantity) {
         //check if food is free
-        if (food.is_free) {
-          //check if user has already requested for the food
-          const order = await Order.findOne({
-            order_food_id: order_food_id,
-            ordered_by: ordered_by,
-          });
-          if (order) {
-            res.status(400);
-            throw new Error(
-              "You have already requested for this food Please wait for the owner to accept your request"
-            );
-          } else {
-            //place order by pending status
-            const order = new Order({
-              order_food_id,
-              order_name: food.food_name,
-              order_description: food.food_description,
-              order_price: 0,
-              order_image: food.food_image,
-              order_category: food.food_category,
-              order_quantity,
-              order_shared_by: food.food_shared_by,
-              order_location: food.food_location,
-              is_free: food.is_free,
-              is_active: true,
-              ordered_by,
-              order_status: "pending",
-            });
-            order.save();
 
-            // issue a notification here
-            // send notification to ordered by
+        //check if user has already requested for the food
+        const order = await Order.findOne({
+          order_food_id: order_food_id,
+          ordered_by: ordered_by,
+          // order_status not equal to ",
+        });
 
-            const notifyToSharedBy = new Notifications({
-              user_email: food.food_shared_by,
-              message: "You have a new order request for your food item",
-              title: "New Order Request",
-              notification_image: order.order_image,
-            });
-
-            notifyToSharedBy.save();
-
-            //send notification to orderedby
-
-            const notifyToOrderedBy = new Notifications({
-              user_email: ordered_by,
-              message: "Your order request has been placed successfully",
-              title: "Order Requested",
-              notification_image: order.order_image,
-            });
-
-            notifyToOrderedBy.save();
-
-            res.status(200).json({
-              message: "Order Requested successfully",
-              success: true,
-              order,
-            });
-          }
+        if (order?.order_status == "pending") {
+          res.status(400);
+          throw new Error(
+            "You have already requested for this food Please wait for the owner to accept your request"
+          );
         } else {
-          food.food_quantity = food.food_quantity - order_quantity;
-          food.save();
-          //place food order by placed status
+          //place order by pending status
           const order = new Order({
             order_food_id,
             order_name: food.food_name,
             order_description: food.food_description,
-            order_price: food.food_price * order_quantity,
+            order_price: 0,
             order_image: food.food_image,
             order_category: food.food_category,
             order_quantity,
@@ -129,33 +81,36 @@ export const orderFood = async (req, res) => {
             is_free: food.is_free,
             is_active: true,
             ordered_by,
-            order_status: "placed",
+            order_status: "pending",
+            is_pickup: false,
           });
           order.save();
 
-          //send notification to both
+          // issue a notification here
+          // send notification to ordered by
 
           const notifyToSharedBy = new Notifications({
             user_email: food.food_shared_by,
-            message: "You have a new order for your food item by " + ordered_by,
-            title: "New Order",
+            message: "You have a new order request for your food item",
+            title: "New Order Request",
             notification_image: order.order_image,
           });
 
           notifyToSharedBy.save();
 
           //send notification to orderedby
+
           const notifyToOrderedBy = new Notifications({
             user_email: ordered_by,
-            message: "Your order has been placed successfully",
-            title: "Order Placed",
+            message: "Your order request has been placed successfully",
+            title: "Order Requested",
             notification_image: order.order_image,
           });
 
           notifyToOrderedBy.save();
 
           res.status(200).json({
-            message: "Order placed successfully",
+            message: "Order Requested successfully",
             success: true,
             order,
           });
@@ -307,9 +262,10 @@ export const rejectOrder = async (req, res) => {
 //get all pending requests by order shared by a user
 export const getPendingRequests = async (req, res) => {
   try {
+    //get all requests shared by whos status is pending or placed
     const order = await Order.find({
       order_shared_by: req.params.order_shared_by,
-      order_status: "pending",
+      $or: [{ order_status: "pending" }, { order_status: "placed" }],
     });
 
     if (order) {
@@ -362,7 +318,7 @@ export const cancelOrder = async (req, res) => {
     const order = await Order.findById({ _id: order_id });
     if (order) {
       //check if order is pending
-      if (order.order_status === "placed") {
+      if (order.order_status === "placed" || order.order_status === "pending") {
         //check if food quantity is sufficient
         const food = await Food.findById({ _id: order_food_id });
         if (food) {

@@ -65,6 +65,11 @@ const OrderSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  is_pickup: {
+    type: Boolean,
+    required: true,
+    trim: true,
+  },
   order_status: {
     type: String,
     required: true,
