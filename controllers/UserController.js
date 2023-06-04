@@ -134,8 +134,10 @@ export const loginUser = async (req, res) => {
           coord: user.coord,
           accounttype: user.accounttype,
           first_name: user.first_name,
+          last_name: user.last_name,
           emailVerified: user.emailVerified,
           phone_number: user.phone_number,
+          user_avatar: user.user_avatar,
         },
       });
     } else {
