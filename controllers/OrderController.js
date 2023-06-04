@@ -379,3 +379,56 @@ export const cancelOrder = async (req, res) => {
     });
   }
 };
+
+// order picked up
+export const orderPickedUp = async (req, res) => {
+  try {
+    const { order_id, order_shared_by } = req.body;
+
+    const order = await Order.findById({ _id: order_id });
+    if (order) {
+      //check if order is pending
+      if (order.order_status === "placed") {
+        //update order status to picked up
+        order.is_pickup = true;
+        order.is_active = false;
+        order.save();
+        console.log(order, "order picked up");
+        //send a notification to ordered_by
+
+        const notifyToOrderedBy = new Notifications({
+          user_email: order.ordered_by,
+          message: "Your order has been picked up",
+          title: "Order Picked Up",
+          notification_image: order.order_image,
+        });
+        await notifyToOrderedBy.save();
+        //send a notification to ordered_to
+        const notifyToOrderedTo = new Notifications({
+          user_email: order.order_shared_by,
+          message: "You have picked up the order of " + order_shared_by,
+          title: "Order Picked Up",
+        });
+
+        await notifyToOrderedTo.save();
+
+        res.status(200).json({
+          message: "Order picked up successfully",
+          success: true,
+          order,
+        });
+      } else {
+        res.status(400);
+        throw new Error("Order already " + order.order_status);
+      }
+    } else {
+      res.status(400);
+      throw new Error("Invalid order data");
+    }
+  } catch (error) {
+    res.status(400).json({
+      message: error.message,
+      success: false,
+    });
+  }
+};
