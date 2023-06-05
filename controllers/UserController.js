@@ -3,6 +3,8 @@ import User from "../models/Users.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import Review from "../models/Reviews.js";
+import Food from "../models/Food.js";
 // @desc    Register a new user
 // @route   POST http://localhost:8000/api/users/signup
 // @access  Public
@@ -89,6 +91,25 @@ export const updateUserProfile = async (req, res) => {
         (user.last_name = last_name),
         (user.user_avatar = user_avatar);
       const updatedUser = await user.save();
+
+      //update food_shared_by avatar
+      const updatedFood = await Food.updateMany(
+        { food_shared_by: email },
+        { $set: { food_shared_by_avatar: user_avatar } }
+      );
+
+      //update reviews by rated by
+
+      const reviews = await Review.updateMany(
+        {
+          ratedBy_email: email,
+        },
+        //$set avatar
+        { $set: { ratedBy_avatar: user_avatar } }
+      );
+
+      console.log(updatedFood, reviews);
+
       res.status(200).json({
         message: "User updated successfully",
         success: true,

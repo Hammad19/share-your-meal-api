@@ -52,6 +52,12 @@ const FoodSchema = new mongoose.Schema({
     trim: true,
   },
 
+  food_shared_by_avatar: {
+    type: String,
+    required: false,
+    trim: true,
+  },
+
   phone_number: {
     type: String,
     required: true,

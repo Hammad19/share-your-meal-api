@@ -41,6 +41,7 @@ export const createReview = async (req, res) => {
       ratedBy_email,
       food,
       order,
+      ratedBy_avatar: ratedBy.user_avatar,
     });
     if (newReview) {
       //get average of all reviews of food shared by and update it on every food shared by that user
@@ -87,6 +88,7 @@ export const getReviewsByUser = async (req, res) => {
 
   try {
     const reviews = await Review.find({ user: user });
+
     if (reviews) {
       //take out average and send
       let total = 0;

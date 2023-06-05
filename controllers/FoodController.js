@@ -45,6 +45,7 @@ export const addFood = async (req, res) => {
         ? user.location_name
         : "Unknown Address",
       phone_number,
+      food_shared_by_avatar: user.user_avatar,
     });
 
     if (food) {
@@ -65,6 +66,7 @@ export const addFood = async (req, res) => {
           is_available: food.is_available,
           food_location: food.food_location,
           phone_number: food.phone_number,
+          food_shared_by_avatar: food.food_shared_by_avatar,
         },
       });
     } else {

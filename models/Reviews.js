@@ -46,6 +46,13 @@ const ReviewSchema = new mongoose.Schema({
     trim: true,
   },
 
+  ratedBy_avatar: {
+    //requried false
+    type: String,
+    trim: true,
+    reqruied: false,
+  },
+
   createdAt: {
     type: Date,
     default: Date.now,
